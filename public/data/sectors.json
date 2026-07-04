@@ -8,6 +8,7 @@
       "sectorId": "ai",
       "subsectorId": "semiconductors",
       "title": "AI 반도체 수요 구조",
+      "format": "markdown",
       "file": "ai-semiconductor-demand-chain.md",
       "href": "./core-knowledge/ai/semiconductors/ai-semiconductor-demand-chain.md"
     },
@@ -15,6 +16,7 @@
       "sectorId": "ai",
       "subsectorId": "semiconductors",
       "title": "HBM / Memory / Packaging 기본 지식",
+      "format": "markdown",
       "file": "hbm-memory-packaging-primer.md",
       "href": "./core-knowledge/ai/semiconductors/hbm-memory-packaging-primer.md"
     }
@@ -34,6 +36,7 @@
             {
               "date": "2026-07-04",
               "title": "토큰 최적화와 AI 반도체 수요",
+              "format": "markdown",
               "file": "report.md",
               "href": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/report.md",
               "dataPath": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/data/metrics.json"

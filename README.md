@@ -2,7 +2,7 @@
 
 Public investment dashboard for tracking AI-sector market signals with source-backed data.
 
-The initial section is `AI > Semiconductors`, focused on token-price trends, AI adoption, and semiconductor revenue indicators. The dashboard is a static site hosted on GitHub Pages.
+The initial section is `AI > Semiconductors`, focused on token-price trends, AI adoption, and semiconductor revenue indicators. The dashboard is a Vite/React static site hosted on GitHub Pages.
 
 ## Data Policy
 
@@ -14,20 +14,23 @@ The initial section is `AI > Semiconductors`, focused on token-price trends, AI 
 ## Local Preview
 
 ```bash
-python3 -m http.server 4173
+npm install
+npm run dev -- --port 4173
 ```
 
-Then open `http://127.0.0.1:4173`.
+Then open `http://127.0.0.1:4173/ai-investment-dashboard/`.
 
 ## Structure
 
-- `index.html` - static app shell and investment dashboard layout
-- `styles.css` - visual system and responsive layout
-- `app.js` - chart rendering and dashboard state
-- `data/sectors.json` - sector, subsector, report, and core-knowledge navigation
-- `reports/<sector>/<subsector>/YYYY-MM-DD-title/report.md` - dated one-off reports
-- `reports/<sector>/<subsector>/YYYY-MM-DD-title/data/metrics.json` - report-specific source-backed metrics and excluded indicators
-- `core-knowledge/<sector>/<subsector>/*.md` - evergreen core knowledge
+- `src/App.jsx` - application state and view routing
+- `src/components/Sidebar.jsx` - sector tree navigation
+- `src/components/DashboardView.jsx` - report dashboard and charts
+- `src/components/DocumentViewer.jsx` - inline document viewer
+- `src/components/MarkdownRenderer.jsx` - Markdown and Mermaid rendering
+- `public/data/sectors.json` - sector, report, and core-knowledge navigation
+- `public/reports/<sector>/<subsector>/YYYY-MM-DD-title/report.md` - dated one-off reports
+- `public/reports/<sector>/<subsector>/YYYY-MM-DD-title/data/metrics.json` - report-specific source-backed metrics and excluded indicators
+- `public/core-knowledge/<sector>/<subsector>/*.md` - evergreen core knowledge
 
 ## Collaboration
 
