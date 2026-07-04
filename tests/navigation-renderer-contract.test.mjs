@@ -37,6 +37,8 @@ assert.match(markdownRenderer, /DOMPurify\.sanitize/, "Markdown output should be
 assert.match(markdownRenderer, /rewriteRelativeUrls/, "Markdown renderer should rewrite relative asset links");
 assert.match(mermaidRenderer, /renderMermaidDiagram/, "app should include Mermaid rendering support");
 assert.match(mermaidRenderer, /mermaid\.render/, "Mermaid renderer should convert Mermaid blocks to SVG");
+assert.match(mermaidRenderer, /htmlLabels:\s*false/, "Mermaid labels should render as SVG text nodes");
+assert.match(mermaidRenderer, /nodeTextColor/, "Mermaid node label text should have an explicit visible color");
 assert.match(app, /setSelection\(\{ type: "report"/, "app should route report items from the sidebar");
 assert.match(app, /DocumentViewer selection=\{selection\}/, "app should route core documents to the main pane");
 assert.match(app, /content-manifest\.json/, "app should load generated content manifest");

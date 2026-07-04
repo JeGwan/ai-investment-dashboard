@@ -12,10 +12,16 @@ const loadMermaid = async () => {
     startOnLoad: false,
     securityLevel: "strict",
     theme: "base",
+    flowchart: {
+      htmlLabels: false,
+      curve: "basis"
+    },
     themeVariables: {
       primaryColor: "#eef6ff",
       primaryTextColor: "#26313c",
       primaryBorderColor: "#9bbfdf",
+      nodeTextColor: "#26313c",
+      textColor: "#26313c",
       lineColor: "#65717f",
       secondaryColor: "#f3f7f4",
       tertiaryColor: "#ffffff"

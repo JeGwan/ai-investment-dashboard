@@ -769,6 +769,15 @@ h2 {
   padding: 16px;
 }
 
+.mermaid svg text {
+  fill: var(--ink);
+}
+
+.mermaid .nodeLabel,
+.mermaid .edgeLabel {
+  color: var(--ink);
+}
+
 .mermaid-error {
   align-items: start;
   justify-items: start;
