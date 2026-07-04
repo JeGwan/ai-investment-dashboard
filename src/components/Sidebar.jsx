@@ -1,3 +1,4 @@
+import { ChartBarSquareIcon, MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 
 const toggleSet = (set, value) => {
@@ -21,7 +22,7 @@ const documentMeta = item => {
   return item.publishedAt;
 };
 
-export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }) => {
+export const Sidebar = ({ sectors, selection, theme, onSelectHome, onToggleTheme, onSelectReport, onSelectDocument }) => {
   const [expandedSectors, setExpandedSectors] = useState(() => new Set([sectors.activeSectorId]));
   const [expandedFolders, setExpandedFolders] = useState(() => new Set([
     `${sectors.activeSectorId}:core`,
@@ -39,12 +40,18 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
 
   return (
     <aside className="sidebar" aria-label="dashboard navigation">
-      <div className="brand-block">
+      <button
+        className={`brand-block${selection.type === "home" ? " active" : ""}`}
+        type="button"
+        onClick={onSelectHome}
+        aria-label="go to home"
+      >
+        <ChartBarSquareIcon aria-hidden="true" />
         <div>
-          <strong>SignalDesk</strong>
-          <span>AI Investment Dashboard</span>
+          <strong>investors</strong>
+          <span>Powered By AI</span>
         </div>
-      </div>
+      </button>
 
       <div className="nav-title">Sector</div>
       <nav className="sector-nav" id="sectorNav" aria-label="sector navigation">
@@ -77,7 +84,7 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
                 <div className="nav-panel">
                   <FolderButton
                     expanded={coreExpanded}
-                    label="Core Knowledge"
+                    label="개념"
                     count={coreItems.length}
                     onClick={() => setExpandedFolders(current => toggleSet(current, coreKey))}
                   />
@@ -100,7 +107,7 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
 
                   <FolderButton
                     expanded={reportsExpanded}
-                    label="Reports"
+                    label="보고서"
                     count={reportItems.length}
                     onClick={() => setExpandedFolders(current => toggleSet(current, reportsKey))}
                   />
@@ -127,10 +134,10 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
         })}
       </nav>
 
-      <div className="sidebar-note">
-        <span>Scope</span>
-        <p>실제 공개 데이터가 있는 지표만 포함한다.</p>
-      </div>
+      <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="toggle color theme">
+        {theme === "dark" ? <SunIcon aria-hidden="true" /> : <MoonIcon aria-hidden="true" />}
+        <span>{theme === "dark" ? "라이트 모드" : "다크 모드"}</span>
+      </button>
     </aside>
   );
 };

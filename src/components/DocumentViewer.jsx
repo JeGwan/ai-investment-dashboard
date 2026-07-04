@@ -15,10 +15,16 @@ const InlineHtml = ({ content, format }) => {
   return <div className={`document-body ${format}-body`} dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
+const documentMeta = item => [
+  item.publishedAt && { label: "생성일", value: item.publishedAt },
+  item.updatedAt && { label: "수정일", value: item.updatedAt }
+].filter(Boolean);
+
 export const DocumentViewer = ({ selection }) => {
   const [state, setState] = useState({ status: "loading", content: "", error: "" });
   const item = selection.item;
   const format = detectDocumentFormat(item);
+  const meta = documentMeta(item);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,24 +49,30 @@ export const DocumentViewer = ({ selection }) => {
 
   return (
     <main className="workspace document-workspace" id="documentViewer">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">
-            {selection.sector.name} Sector / {selection.type === "core" ? "Core Knowledge" : "Report"}
-          </p>
-          <h1>{item.title}</h1>
-        </div>
-        <div className="status-panel" aria-label="document format">
-          <span className="status-dot" />
-          <span>{format.toUpperCase()} 렌더링</span>
-        </div>
+      <header className="document-topbar">
+        <p className="eyebrow">
+          {selection.sector.name.toUpperCase()} SECTOR / {selection.type === "core" ? "개념" : "보고서"}
+        </p>
       </header>
 
       <article className="document-panel">
+        <header className="document-heading">
+          <h1>{item.title}</h1>
+          {meta.length > 0 && (
+            <div className="document-meta" aria-label="document metadata">
+              {meta.map(entry => (
+                <span key={entry.label}>
+                  <strong>{entry.label}</strong>
+                  {entry.value}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
         {state.status === "loading" && <p className="document-state">문서를 불러오는 중</p>}
         {state.status === "error" && <p className="document-state error">{state.error}</p>}
         {state.status === "ready" && format === "markdown" && (
-          <MarkdownRenderer content={state.content} basePath={documentBasePath(item.href)} />
+          <MarkdownRenderer content={state.content} basePath={documentBasePath(item.href)} documentTitle={item.title} />
         )}
         {state.status === "ready" && format !== "markdown" && <InlineHtml content={state.content} format={format} />}
       </article>

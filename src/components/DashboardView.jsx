@@ -84,7 +84,7 @@ export const DashboardView = ({ data, sector, subsector, report }) => {
       <section className="section-band">
         <div className="section-title">
           <div>
-            <p className="eyebrow">Report</p>
+            <p className="eyebrow">보고서</p>
             <h2>{report.title}</h2>
           </div>
           <div className="dashboard-stats" aria-label="dashboard stats">

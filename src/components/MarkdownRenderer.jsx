@@ -6,6 +6,8 @@ import { MermaidRenderer } from "./MermaidRenderer.jsx";
 
 const mermaidFencePattern = /```mermaid\s*\n([\s\S]*?)```/g;
 
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const isRelativeUrl = value => {
   if (!value) return false;
   return !/^(?:[a-z]+:|#|\/)/i.test(value);
@@ -37,8 +39,16 @@ export const renderMarkdownDocument = (markdown, basePath) => {
   return rewriteRelativeUrls(sanitized, basePath);
 };
 
-export const splitMarkdownDocument = markdown => {
-  const body = stripFrontmatter(markdown);
+export const stripLeadingTitle = (markdown, documentTitle = "") => {
+  const body = stripFrontmatter(markdown).trimStart();
+  if (!documentTitle) return body;
+
+  const titlePattern = new RegExp(`^#\\s+${escapeRegExp(documentTitle)}\\s*(?:\\n|$)`);
+  return body.replace(titlePattern, "").trimStart();
+};
+
+export const splitMarkdownDocument = (markdown, documentTitle = "") => {
+  const body = stripLeadingTitle(markdown, documentTitle);
   const blocks = [];
   let cursor = 0;
   let match;
@@ -58,8 +68,8 @@ export const splitMarkdownDocument = markdown => {
   return blocks.filter(block => block.content.trim().length > 0);
 };
 
-export const MarkdownRenderer = ({ content, basePath }) => {
-  const blocks = useMemo(() => splitMarkdownDocument(content), [content]);
+export const MarkdownRenderer = ({ content, basePath, documentTitle = "" }) => {
+  const blocks = useMemo(() => splitMarkdownDocument(content, documentTitle), [content, documentTitle]);
 
   return (
     <div className="document-body markdown-body">

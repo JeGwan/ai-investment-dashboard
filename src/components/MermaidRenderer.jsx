@@ -2,6 +2,7 @@ import DOMPurify from "dompurify";
 import { useEffect, useId, useState } from "react";
 
 let initialized = false;
+let renderQueue = Promise.resolve();
 
 const loadMermaid = async () => {
   const module = await import("mermaid");
@@ -31,10 +32,16 @@ const loadMermaid = async () => {
   return mermaid;
 };
 
-export const renderMermaidDiagram = async (id, source) => {
+const renderMermaidDiagramNow = async (id, source) => {
   const mermaid = await loadMermaid();
   const result = await mermaid.render(id, source);
   return DOMPurify.sanitize(result.svg, { USE_PROFILES: { svg: true, svgFilters: true } });
+};
+
+export const renderMermaidDiagram = (id, source) => {
+  const renderTask = renderQueue.then(() => renderMermaidDiagramNow(id, source));
+  renderQueue = renderTask.catch(() => {});
+  return renderTask;
 };
 
 export const MermaidRenderer = ({ source }) => {

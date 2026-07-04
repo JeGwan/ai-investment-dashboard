@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { DashboardView } from "./components/DashboardView.jsx";
 import { DocumentViewer } from "./components/DocumentViewer.jsx";
+import { HomeView } from "./components/HomeView.jsx";
 import { Sidebar } from "./components/Sidebar.jsx";
 import { assetPath } from "./lib/paths.js";
 
@@ -18,13 +19,6 @@ const hydrateSectors = (sectors, manifest) => ({
   }))
 });
 
-const findInitialReport = sectors => {
-  const sector = sectors.sectors.find(item => item.id === sectors.activeSectorId) || sectors.sectors[0];
-  const subsector = sector.subsectors.find(item => item.id === sectors.activeSubsectorId) || sector.subsectors[0];
-  const report = (subsector.reports || [])[0];
-  return { type: "report", sector, subsector, report };
-};
-
 const fetchJson = async path => {
   const response = await fetch(assetPath(path));
   if (!response.ok) throw new Error(`데이터 로딩 실패: ${response.status}`);
@@ -37,6 +31,10 @@ export const App = () => {
   const [reportData, setReportData] = useState(null);
   const [status, setStatus] = useState({ loading: true, error: "" });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "light";
+    return window.localStorage.getItem("investment-dashboard-theme") || "light";
+  });
 
   useEffect(() => {
     Promise.all([
@@ -45,12 +43,16 @@ export const App = () => {
     ])
       .then(([sectorSkeleton, manifest]) => {
         const nextSectors = hydrateSectors(sectorSkeleton, manifest);
-        const initialSelection = findInitialReport(nextSectors);
         setSectors(nextSectors);
-        setSelection(initialSelection);
+        setSelection({ type: "home" });
       })
       .catch(error => setStatus({ loading: false, error: error.message }));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("investment-dashboard-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!selection || selection.type !== "report") return;
@@ -72,6 +74,25 @@ export const App = () => {
     };
   }, [selection]);
 
+  const handleSelectReport = item => {
+    setSelection({ type: "report", sector: item.sector, subsector: item.subsector, report: item });
+    setMobileMenuOpen(false);
+  };
+
+  const handleSelectDocument = nextSelection => {
+    setSelection(nextSelection);
+    setMobileMenuOpen(false);
+  };
+
+  const handleSelectHome = () => {
+    setSelection({ type: "home" });
+    setMobileMenuOpen(false);
+  };
+
+  const handleToggleTheme = () => {
+    setTheme(current => current === "dark" ? "light" : "dark");
+  };
+
   const content = useMemo(() => {
     if (!sectors || !selection) {
       return <main className="workspace"><p className="document-state">대시보드를 불러오는 중</p></main>;
@@ -79,6 +100,16 @@ export const App = () => {
 
     if (selection.type === "core") {
       return <DocumentViewer selection={selection} />;
+    }
+
+    if (selection.type === "home") {
+      return (
+        <HomeView
+          sectors={sectors}
+          onSelectReport={handleSelectReport}
+          onSelectDocument={handleSelectDocument}
+        />
+      );
     }
 
     if (status.error) {
@@ -103,22 +134,12 @@ export const App = () => {
     return <div className="app-layout">{content}</div>;
   }
 
-  const handleSelectReport = item => {
-    setSelection({ type: "report", sector: item.sector, subsector: item.subsector, report: item });
-    setMobileMenuOpen(false);
-  };
-
-  const handleSelectDocument = nextSelection => {
-    setSelection(nextSelection);
-    setMobileMenuOpen(false);
-  };
-
   return (
     <div className={`app-layout${mobileMenuOpen ? " menu-open" : ""}`}>
       <header className="mobile-gnb">
         <div>
-          <strong>SignalDesk</strong>
-          <span>{selection.type === "core" ? "Core Knowledge" : "Reports"}</span>
+          <strong>investors</strong>
+          <span>{selection.type === "home" ? "홈" : selection.type === "core" ? "개념" : "보고서"}</span>
         </div>
         <button type="button" aria-expanded={mobileMenuOpen ? "true" : "false"} onClick={() => setMobileMenuOpen(open => !open)}>
           {mobileMenuOpen ? "Close" : "Menu"}
@@ -128,6 +149,9 @@ export const App = () => {
       <Sidebar
         sectors={sectors}
         selection={selection}
+        theme={theme}
+        onSelectHome={handleSelectHome}
+        onToggleTheme={handleToggleTheme}
         onSelectReport={handleSelectReport}
         onSelectDocument={handleSelectDocument}
       />
