@@ -1,21 +1,22 @@
 {
   "activeSectorId": "ai",
   "activeSubsectorId": "semiconductors",
-  "documentPattern": "YYYY-MM-DD-title.md",
+  "reportPattern": "reports/<sector>/<subsector>/YYYY-MM-DD-title/report.md",
+  "coreKnowledgePattern": "core-knowledge/<sector>/<subsector>/title.md",
   "coreKnowledge": [
     {
       "sectorId": "ai",
       "subsectorId": "semiconductors",
       "title": "AI 반도체 수요 구조",
       "file": "ai-semiconductor-demand-chain.md",
-      "href": "./content/ai/core/ai-semiconductor-demand-chain.md"
+      "href": "./core-knowledge/ai/semiconductors/ai-semiconductor-demand-chain.md"
     },
     {
       "sectorId": "ai",
       "subsectorId": "semiconductors",
       "title": "HBM / Memory / Packaging 기본 지식",
       "file": "hbm-memory-packaging-primer.md",
-      "href": "./content/ai/core/hbm-memory-packaging-primer.md"
+      "href": "./core-knowledge/ai/semiconductors/hbm-memory-packaging-primer.md"
     }
   ],
   "sectors": [
@@ -29,12 +30,13 @@
           "name": "반도체",
           "enabled": true,
           "href": "#semiconductors",
-          "documents": [
+          "reports": [
             {
               "date": "2026-07-04",
               "title": "토큰 최적화와 AI 반도체 수요",
-              "file": "2026-07-04-token-optimization-ai-semiconductors.md",
-              "href": "./content/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors.md"
+              "file": "report.md",
+              "href": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/report.md",
+              "dataPath": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/data/metrics.json"
             }
           ]
         },
@@ -42,19 +44,19 @@
           "id": "software",
           "name": "Software",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "infrastructure",
           "name": "Infrastructure",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "models",
           "name": "Models",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     },
@@ -67,13 +69,13 @@
           "id": "power-grid",
           "name": "Power & Grid",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "cooling",
           "name": "Cooling",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     },
@@ -86,13 +88,13 @@
           "id": "biotech",
           "name": "Biotech",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "medical-ai",
           "name": "Medical AI",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     },
@@ -105,13 +107,13 @@
           "id": "industrial-robots",
           "name": "Industrial Robots",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "humanoids",
           "name": "Humanoids",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     },
@@ -124,13 +126,13 @@
           "id": "devices",
           "name": "Devices",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "applications",
           "name": "Applications",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     },
@@ -143,13 +145,13 @@
           "id": "payments",
           "name": "Payments",
           "enabled": false,
-          "documents": []
+          "reports": []
         },
         {
           "id": "capital-markets",
           "name": "Capital Markets",
           "enabled": false,
-          "documents": []
+          "reports": []
         }
       ]
     }

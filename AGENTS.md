@@ -8,7 +8,7 @@ This repository is a public AI investment dashboard. The first active section is
 
 - Use only real public data from primary or clearly documented sources.
 - Do not add synthetic, assumed, interpolated, or internally estimated values.
-- Every rendered metric must include source links in `data/metrics.json`.
+- Every rendered metric must include source links in the active report's `data/metrics.json`.
 - Metrics without reliable public time-series data belong in `excludedIndicators`, not in charts.
 
 ## Design And Code Patterns
@@ -22,8 +22,9 @@ This repository is a public AI investment dashboard. The first active section is
 
 ## Content Structure
 
-- Dated reports use `content/<sector>/<subsector>/YYYY-MM-DD-title.md`.
-- Evergreen core knowledge uses `content/<sector>/core/title.md`.
+- Dated reports use `reports/<sector>/<subsector>/YYYY-MM-DD-title/report.md`.
+- Report data lives beside the report at `reports/<sector>/<subsector>/YYYY-MM-DD-title/data/metrics.json`.
+- Evergreen core knowledge uses `core-knowledge/<sector>/<subsector>/title.md`.
 - Register reports and core knowledge in `data/sectors.json` so navigation stays data-driven.
 - Keep one-off market observations in reports; keep durable definitions and causal maps in core knowledge.
 

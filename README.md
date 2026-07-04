@@ -24,13 +24,13 @@ Then open `http://127.0.0.1:4173`.
 - `index.html` - static app shell and investment dashboard layout
 - `styles.css` - visual system and responsive layout
 - `app.js` - chart rendering and dashboard state
-- `data/metrics.json` - source-backed metrics and excluded indicators
 - `data/sectors.json` - sector, subsector, report, and core-knowledge navigation
-- `content/<sector>/<subsector>/YYYY-MM-DD-title.md` - dated one-off reports
-- `content/<sector>/core/*.md` - evergreen core knowledge
+- `reports/<sector>/<subsector>/YYYY-MM-DD-title/report.md` - dated one-off reports
+- `reports/<sector>/<subsector>/YYYY-MM-DD-title/data/metrics.json` - report-specific source-backed metrics and excluded indicators
+- `core-knowledge/<sector>/<subsector>/*.md` - evergreen core knowledge
 
 ## Collaboration
 
-Small, reviewable changes are preferred. When adding a metric, update `data/metrics.json`, include source links, and verify that labels and values have matching lengths.
+Small, reviewable changes are preferred. When adding a metric, update the active report's `data/metrics.json`, include source links, and verify that labels and values have matching lengths.
 
-Reports should be dated and tied to a sector/subsector. Core knowledge should contain stable definitions, causal maps, and reusable background context rather than time-sensitive market observations.
+Reports should be dated and tied to a sector/subsector. Keep the report markdown and the data used by that report in the same report directory. Core knowledge should contain stable definitions, causal maps, and reusable background context rather than time-sensitive market observations.

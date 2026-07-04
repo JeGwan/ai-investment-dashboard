@@ -4,7 +4,8 @@ const state = {
   data: null,
   sectors: null,
   selectedId: null,
-  normalized: false
+  normalized: false,
+  expandedSectorIds: new Set()
 };
 
 const formatNumber = (value, maxDigits = 1) => {
@@ -63,6 +64,8 @@ const activeSubsector = () => {
   const sector = activeSector();
   return sector.subsectors.find(subsector => subsector.id === state.sectors.activeSubsectorId);
 };
+
+const activeReport = () => (activeSubsector().reports || [])[0];
 
 const getPlotSeries = indicator => {
   return indicator.series.map(series => ({
@@ -198,15 +201,33 @@ const renderSectorNav = () => {
 
   state.sectors.sectors.forEach(sector => {
     const group = document.createElement("section");
-    group.className = `nav-group${sector.enabled ? "" : " disabled"}`;
+    const expanded = state.expandedSectorIds.has(sector.id);
+    const panelId = `sector-panel-${sector.id}`;
+    group.className = `nav-group${sector.enabled ? "" : " disabled"}${expanded ? " expanded" : ""}`;
 
-    const heading = document.createElement("div");
-    heading.className = "nav-heading";
-    heading.innerHTML = `
-      <span>${sector.enabled ? "Sector" : "Planned Sector"}</span>
-      <strong>${escapeHtml(sector.name)}</strong>
+    const trigger = document.createElement("button");
+    trigger.className = "nav-trigger";
+    trigger.type = "button";
+    trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
+    trigger.setAttribute("aria-controls", panelId);
+    trigger.innerHTML = `
+      <span class="nav-trigger-text">
+        <span>${sector.enabled ? "Sector" : "Planned"}</span>
+        <strong>${escapeHtml(sector.name)}</strong>
+      </span>
+      <span class="nav-chevron" aria-hidden="true"></span>
     `;
-    group.appendChild(heading);
+    trigger.addEventListener("click", () => {
+      if (expanded) state.expandedSectorIds.delete(sector.id);
+      else state.expandedSectorIds.add(sector.id);
+      renderSectorNav();
+    });
+    group.appendChild(trigger);
+
+    const panel = document.createElement("div");
+    panel.className = "nav-panel";
+    panel.id = panelId;
+    panel.hidden = !expanded;
 
     sector.subsectors.forEach(subsector => {
       const link = document.createElement(subsector.enabled ? "a" : "span");
@@ -220,17 +241,18 @@ const renderSectorNav = () => {
       }
       link.innerHTML = `
         <span class="nav-dot"></span>
-        ${escapeHtml(subsector.name)}
+        <span>${escapeHtml(subsector.name)}</span>
       `;
-      group.appendChild(link);
+      panel.appendChild(link);
     });
 
+    group.appendChild(panel);
     nav.appendChild(group);
   });
 };
 
 const renderDocuments = () => {
-  const reports = activeSubsector().documents || [];
+  const reports = activeSubsector().reports || [];
   const reportContainer = document.getElementById("sectorDocs");
   const knowledge = state.sectors.coreKnowledge
     .filter(item => item.sectorId === state.sectors.activeSectorId)
@@ -242,7 +264,7 @@ const renderDocuments = () => {
     <a class="document-link" href="${escapeHtml(item.href)}">
       <span>${escapeHtml(item.date)}</span>
       <strong>${escapeHtml(item.title)}</strong>
-      <code>${escapeHtml(item.file)}</code>
+      <code>${escapeHtml(item.dataPath || item.file)}</code>
     </a>
   `).join("");
 
@@ -361,13 +383,28 @@ const render = () => {
   renderExcludedIndicators();
 };
 
+const loadActiveReportData = async () => {
+  const report = activeReport();
+  if (!report || !report.dataPath) {
+    throw new Error("활성 리포트 데이터 경로가 없습니다.");
+  }
+
+  const response = await fetch(report.dataPath);
+  if (!response.ok) {
+    throw new Error(`리포트 데이터 로딩 실패: ${response.status}`);
+  }
+  state.data = await response.json();
+};
+
 const boot = async () => {
-  const [metricsResponse, sectorsResponse] = await Promise.all([
-    fetch("./data/metrics.json"),
-    fetch("./data/sectors.json")
-  ]);
-  state.data = await metricsResponse.json();
+  const sectorsResponse = await fetch("./data/sectors.json");
+  if (!sectorsResponse.ok) {
+    throw new Error(`섹터 데이터 로딩 실패: ${sectorsResponse.status}`);
+  }
   state.sectors = await sectorsResponse.json();
+  state.expandedSectorIds.add(state.sectors.activeSectorId);
+
+  await loadActiveReportData();
   state.selectedId = state.data.indicators[0].id;
 
   document.getElementById("normalizeToggle").addEventListener("change", event => {
