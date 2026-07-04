@@ -29,6 +29,7 @@ assert.match(documentViewer, /dangerouslySetInnerHTML/, "document viewer should 
 assert.match(sidebar, /className="nav-title">\s*Sector\s*</, "Sector label should appear once at the top of navigation");
 assert.match(sidebar, /Core Knowledge/, "AI sector should expose a Core Knowledge subtree");
 assert.match(sidebar, /Reports/, "AI sector should expose a Reports subtree");
+assert.match(sidebar, /documentMeta\(item\).*<small>/s, "core knowledge items should display frontmatter dates when available");
 assert.doesNotMatch(sidebar, /sector\.enabled\s*\?\s*"Sector"\s*:\s*"Planned"/, "menu items should not repeat Sector/Planned labels");
 
 assert.match(markdownRenderer, /renderMarkdownDocument/, "app should include markdown rendering");

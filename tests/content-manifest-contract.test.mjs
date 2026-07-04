@@ -18,8 +18,16 @@ assert.ok(existsSync(join(root, "public/data/content-manifest.json")), "generate
 const manifest = JSON.parse(read("public/data/content-manifest.json"));
 assert.ok(Array.isArray(manifest.coreKnowledge), "manifest should expose coreKnowledge");
 assert.ok(Array.isArray(manifest.reports), "manifest should expose reports");
-assert.ok(manifest.coreKnowledge.length >= 2, "manifest should include existing core knowledge docs");
+assert.ok(manifest.coreKnowledge.length >= 1, "manifest should include core knowledge docs");
 assert.ok(manifest.reports.length >= 1, "manifest should include existing reports");
+assert.ok(
+  manifest.coreKnowledge.some(item => item.title === "AI 데이터센터 랙 계층과 구성도"),
+  "core knowledge should include the AI data center rack note"
+);
+assert.ok(
+  manifest.coreKnowledge.every(item => item.title !== "AI 반도체 수요 구조" && item.title !== "HBM / Memory / Packaging Primer"),
+  "core knowledge should not include placeholder sample docs"
+);
 
 for (const item of [...manifest.coreKnowledge, ...manifest.reports]) {
   assert.ok(item.title, `manifest item needs title: ${item.href}`);

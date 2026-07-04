@@ -15,6 +15,12 @@ const FolderButton = ({ expanded, label, count, onClick }) => (
   </button>
 );
 
+const documentMeta = item => {
+  if (!item.publishedAt) return "";
+  if (item.updatedAt && item.updatedAt !== item.publishedAt) return `${item.publishedAt} · 수정 ${item.updatedAt}`;
+  return item.publishedAt;
+};
+
 export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }) => {
   const [expandedSectors, setExpandedSectors] = useState(() => new Set([sectors.activeSectorId]));
   const [expandedFolders, setExpandedFolders] = useState(() => new Set([
@@ -86,6 +92,7 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
                           onClick={() => onSelectDocument({ type: "core", item, sector })}
                         >
                           <span>{item.title}</span>
+                          {documentMeta(item) && <small>{documentMeta(item)}</small>}
                         </button>
                       ))}
                     </div>

@@ -2,23 +2,13 @@
   "coreKnowledge": [
     {
       "sectorId": "ai",
-      "subsectorId": "semiconductors",
-      "title": "AI 반도체 수요 구조",
+      "subsectorId": "infrastructure",
+      "title": "AI 데이터센터 랙 계층과 구성도",
       "publishedAt": "2026-07-04",
       "updatedAt": "2026-07-04",
       "format": "markdown",
-      "file": "ai-semiconductor-demand-chain.md",
-      "href": "./core-knowledge/ai/semiconductors/ai-semiconductor-demand-chain.md"
-    },
-    {
-      "sectorId": "ai",
-      "subsectorId": "semiconductors",
-      "title": "HBM / Memory / Packaging Primer",
-      "publishedAt": "2026-07-04",
-      "updatedAt": "2026-07-04",
-      "format": "markdown",
-      "file": "hbm-memory-packaging-primer.md",
-      "href": "./core-knowledge/ai/semiconductors/hbm-memory-packaging-primer.md"
+      "file": "ai-data-center-rack-hierarchy.md",
+      "href": "./core-knowledge/ai/infrastructure/ai-data-center-rack-hierarchy.md"
     }
   ],
   "reports": [
