@@ -1,3 +1,6 @@
+import DOMPurify from "dompurify";
+import { useEffect, useId, useState } from "react";
+
 let initialized = false;
 
 const loadMermaid = async () => {
@@ -22,24 +25,46 @@ const loadMermaid = async () => {
   return mermaid;
 };
 
-export const renderMermaidDiagrams = async root => {
-  if (!root) return;
-
-  const codeBlocks = Array.from(root.querySelectorAll("pre > code.language-mermaid, code.language-mermaid"));
-  if (codeBlocks.length === 0) return;
-
+export const renderMermaidDiagram = async (id, source) => {
   const mermaid = await loadMermaid();
-  const nodes = codeBlocks.map((code, index) => {
-    const container = document.createElement("div");
-    container.className = "mermaid";
-    container.dataset.processed = "false";
-    container.id = `mermaid-${Date.now()}-${index}`;
-    container.textContent = code.textContent;
+  const result = await mermaid.render(id, source);
+  return DOMPurify.sanitize(result.svg, { USE_PROFILES: { svg: true, svgFilters: true } });
+};
 
-    const parent = code.parentElement?.tagName === "PRE" ? code.parentElement : code;
-    parent.replaceWith(container);
-    return container;
-  });
+export const MermaidRenderer = ({ source }) => {
+  const reactId = useId().replaceAll(":", "");
+  const [state, setState] = useState({ status: "loading", svg: "", error: "" });
 
-  await mermaid.run({ nodes });
+  useEffect(() => {
+    let cancelled = false;
+    setState({ status: "loading", svg: "", error: "" });
+
+    renderMermaidDiagram(`mermaid-${reactId}`, source)
+      .then(svg => {
+        if (!cancelled) setState({ status: "ready", svg, error: "" });
+      })
+      .catch(error => {
+        if (!cancelled) setState({ status: "error", svg: "", error: error.message });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reactId, source]);
+
+  if (state.status === "loading") {
+    return <div className="mermaid mermaid-loading">Mermaid 렌더링 중</div>;
+  }
+
+  if (state.status === "error") {
+    return (
+      <div className="mermaid mermaid-error">
+        <strong>Mermaid 렌더링 실패</strong>
+        <pre>{source}</pre>
+        <p>{state.error}</p>
+      </div>
+    );
+  }
+
+  return <div className="mermaid" dangerouslySetInnerHTML={{ __html: state.svg }} />;
 };

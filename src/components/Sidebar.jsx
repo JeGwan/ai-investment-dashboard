@@ -23,7 +23,7 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
   ]));
 
   const coreBySector = useMemo(() => {
-    return sectors.coreKnowledge.reduce((map, item) => {
+    return (sectors.coreKnowledge || []).reduce((map, item) => {
       const list = map.get(item.sectorId) || [];
       list.push(item);
       map.set(item.sectorId, list);
@@ -108,7 +108,7 @@ export const Sidebar = ({ sectors, selection, onSelectReport, onSelectDocument }
                           onClick={() => onSelectReport(item)}
                         >
                           <span>{item.title}</span>
-                          <small>{item.date} · {item.subsector.name}</small>
+                          <small>{item.publishedAt} · {item.subsector.name}</small>
                         </button>
                       ))}
                     </div>

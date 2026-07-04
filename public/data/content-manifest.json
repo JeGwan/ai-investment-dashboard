@@ -1,0 +1,38 @@
+{
+  "coreKnowledge": [
+    {
+      "sectorId": "ai",
+      "subsectorId": "semiconductors",
+      "title": "AI 반도체 수요 구조",
+      "publishedAt": "2026-07-04",
+      "updatedAt": "2026-07-04",
+      "format": "markdown",
+      "file": "ai-semiconductor-demand-chain.md",
+      "href": "./core-knowledge/ai/semiconductors/ai-semiconductor-demand-chain.md"
+    },
+    {
+      "sectorId": "ai",
+      "subsectorId": "semiconductors",
+      "title": "HBM / Memory / Packaging Primer",
+      "publishedAt": "2026-07-04",
+      "updatedAt": "2026-07-04",
+      "format": "markdown",
+      "file": "hbm-memory-packaging-primer.md",
+      "href": "./core-knowledge/ai/semiconductors/hbm-memory-packaging-primer.md"
+    }
+  ],
+  "reports": [
+    {
+      "sectorId": "ai",
+      "subsectorId": "semiconductors",
+      "title": "토큰 최적화와 AI 반도체 수요",
+      "publishedAt": "2026-07-04",
+      "updatedAt": "2026-07-04",
+      "format": "markdown",
+      "file": "report.md",
+      "href": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/report.md",
+      "slug": "2026-07-04-token-optimization-ai-semiconductors",
+      "dataPath": "./reports/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors/data/metrics.json"
+    }
+  ]
+}

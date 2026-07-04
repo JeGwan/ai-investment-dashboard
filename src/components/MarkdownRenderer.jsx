@@ -1,8 +1,10 @@
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { stripFrontmatter } from "../lib/documents.js";
-import { renderMermaidDiagrams } from "./MermaidRenderer.jsx";
+import { MermaidRenderer } from "./MermaidRenderer.jsx";
+
+const mermaidFencePattern = /```mermaid\s*\n([\s\S]*?)```/g;
 
 const isRelativeUrl = value => {
   if (!value) return false;
@@ -27,7 +29,7 @@ const rewriteRelativeUrls = (html, basePath) => {
 };
 
 export const renderMarkdownDocument = (markdown, basePath) => {
-  const rawHtml = marked.parse(stripFrontmatter(markdown), {
+  const rawHtml = marked.parse(markdown, {
     async: false,
     gfm: true
   });
@@ -35,15 +37,45 @@ export const renderMarkdownDocument = (markdown, basePath) => {
   return rewriteRelativeUrls(sanitized, basePath);
 };
 
+export const splitMarkdownDocument = markdown => {
+  const body = stripFrontmatter(markdown);
+  const blocks = [];
+  let cursor = 0;
+  let match;
+
+  while ((match = mermaidFencePattern.exec(body)) !== null) {
+    if (match.index > cursor) {
+      blocks.push({ type: "markdown", content: body.slice(cursor, match.index) });
+    }
+    blocks.push({ type: "mermaid", content: match[1].trim() });
+    cursor = match.index + match[0].length;
+  }
+
+  if (cursor < body.length) {
+    blocks.push({ type: "markdown", content: body.slice(cursor) });
+  }
+
+  return blocks.filter(block => block.content.trim().length > 0);
+};
+
 export const MarkdownRenderer = ({ content, basePath }) => {
-  const ref = useRef(null);
-  const html = useMemo(() => renderMarkdownDocument(content, basePath), [content, basePath]);
+  const blocks = useMemo(() => splitMarkdownDocument(content), [content]);
 
-  useEffect(() => {
-    renderMermaidDiagrams(ref.current).catch(error => {
-      console.error("Mermaid rendering failed", error);
-    });
-  }, [html]);
+  return (
+    <div className="document-body markdown-body">
+      {blocks.map((block, index) => {
+        if (block.type === "mermaid") {
+          return <MermaidRenderer source={block.content} key={`${block.type}-${index}`} />;
+        }
 
-  return <div ref={ref} className="document-body markdown-body" dangerouslySetInnerHTML={{ __html: html }} />;
+        return (
+          <div
+            className="markdown-section"
+            dangerouslySetInnerHTML={{ __html: renderMarkdownDocument(block.content, basePath) }}
+            key={`${block.type}-${index}`}
+          />
+        );
+      })}
+    </div>
+  );
 };

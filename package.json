@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "manifest": "node scripts/generate-content-manifest.mjs",
+    "dev": "npm run manifest && vite --host 127.0.0.1",
+    "build": "npm run manifest && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node tests/navigation-renderer-contract.test.mjs"
+    "test": "npm run manifest && node tests/navigation-renderer-contract.test.mjs && node tests/content-manifest-contract.test.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",

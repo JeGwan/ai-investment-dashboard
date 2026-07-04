@@ -4,6 +4,20 @@ import { DocumentViewer } from "./components/DocumentViewer.jsx";
 import { Sidebar } from "./components/Sidebar.jsx";
 import { assetPath } from "./lib/paths.js";
 
+const hydrateSectors = (sectors, manifest) => ({
+  ...sectors,
+  coreKnowledge: manifest.coreKnowledge,
+  sectors: sectors.sectors.map(sector => ({
+    ...sector,
+    subsectors: sector.subsectors.map(subsector => ({
+      ...subsector,
+      reports: manifest.reports.filter(report =>
+        report.sectorId === sector.id && report.subsectorId === subsector.id
+      )
+    }))
+  }))
+});
+
 const findInitialReport = sectors => {
   const sector = sectors.sectors.find(item => item.id === sectors.activeSectorId) || sectors.sectors[0];
   const subsector = sector.subsectors.find(item => item.id === sectors.activeSubsectorId) || sector.subsectors[0];
@@ -22,10 +36,15 @@ export const App = () => {
   const [selection, setSelection] = useState(null);
   const [reportData, setReportData] = useState(null);
   const [status, setStatus] = useState({ loading: true, error: "" });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    fetchJson("data/sectors.json")
-      .then(nextSectors => {
+    Promise.all([
+      fetchJson("data/sectors.json"),
+      fetchJson("data/content-manifest.json")
+    ])
+      .then(([sectorSkeleton, manifest]) => {
+        const nextSectors = hydrateSectors(sectorSkeleton, manifest);
         const initialSelection = findInitialReport(nextSectors);
         setSectors(nextSectors);
         setSelection(initialSelection);
@@ -84,13 +103,33 @@ export const App = () => {
     return <div className="app-layout">{content}</div>;
   }
 
+  const handleSelectReport = item => {
+    setSelection({ type: "report", sector: item.sector, subsector: item.subsector, report: item });
+    setMobileMenuOpen(false);
+  };
+
+  const handleSelectDocument = nextSelection => {
+    setSelection(nextSelection);
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <div className="app-layout">
+    <div className={`app-layout${mobileMenuOpen ? " menu-open" : ""}`}>
+      <header className="mobile-gnb">
+        <div>
+          <strong>SignalDesk</strong>
+          <span>{selection.type === "core" ? "Core Knowledge" : "Reports"}</span>
+        </div>
+        <button type="button" aria-expanded={mobileMenuOpen ? "true" : "false"} onClick={() => setMobileMenuOpen(open => !open)}>
+          {mobileMenuOpen ? "Close" : "Menu"}
+        </button>
+      </header>
+      {mobileMenuOpen && <button className="menu-scrim" type="button" aria-label="close menu" onClick={() => setMobileMenuOpen(false)} />}
       <Sidebar
         sectors={sectors}
         selection={selection}
-        onSelectReport={item => setSelection({ type: "report", sector: item.sector, subsector: item.subsector, report: item })}
-        onSelectDocument={setSelection}
+        onSelectReport={handleSelectReport}
+        onSelectDocument={handleSelectDocument}
       />
       {content}
     </div>

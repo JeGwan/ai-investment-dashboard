@@ -45,6 +45,11 @@ input {
   min-height: 100vh;
 }
 
+.mobile-gnb,
+.menu-scrim {
+  display: none;
+}
+
 .sidebar {
   position: sticky;
   top: 0;
@@ -764,6 +769,17 @@ h2 {
   padding: 16px;
 }
 
+.mermaid-error {
+  align-items: start;
+  justify-items: start;
+  color: var(--red);
+}
+
+.mermaid-error pre {
+  width: 100%;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 1180px) {
   .summary-grid,
   .small-multiple-grid {
@@ -777,16 +793,80 @@ h2 {
 
 @media (max-width: 860px) {
   .app-layout {
+    display: block;
     grid-template-columns: 1fr;
+    padding-top: 56px;
+  }
+
+  .mobile-gnb {
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    border-bottom: 1px solid #253241;
+    background: var(--sidebar);
+    padding: 9px 14px;
+    color: #ffffff;
+  }
+
+  .mobile-gnb strong,
+  .mobile-gnb span {
+    display: block;
+  }
+
+  .mobile-gnb strong {
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .mobile-gnb span {
+    color: var(--sidebar-muted);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .mobile-gnb button {
+    min-height: 34px;
+    border: 1px solid #334252;
+    border-radius: 8px;
+    background: #18232e;
+    color: #ffffff;
+    padding: 6px 10px;
   }
 
   .sidebar {
-    position: static;
+    position: fixed;
+    z-index: 40;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    width: min(86vw, 330px);
     height: auto;
+    transform: translateX(-102%);
+    transition: transform 180ms ease;
+    box-shadow: 12px 0 28px rgba(17, 24, 32, 0.26);
+  }
+
+  .menu-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .menu-scrim {
+    position: fixed;
+    z-index: 35;
+    inset: 56px 0 0;
+    display: block;
+    border: 0;
+    background: rgba(17, 24, 32, 0.42);
   }
 
   .sector-nav {
-    display: block;
+    display: grid;
   }
 
   .nav-group {
@@ -802,6 +882,10 @@ h2 {
   .workspace {
     padding: 18px 14px 32px;
   }
+
+  .topbar {
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 760px) {
@@ -814,6 +898,14 @@ h2 {
   }
 
   h1 {
+    font-size: 24px;
+  }
+
+  .document-panel {
+    padding: 18px;
+  }
+
+  .document-body h1 {
     font-size: 24px;
   }
 

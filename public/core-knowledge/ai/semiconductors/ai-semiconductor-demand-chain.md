@@ -1,7 +1,9 @@
 ---
 sector: AI
 subsector: semiconductors
-title: AI Semiconductor Demand Chain
+title: AI 반도체 수요 구조
+publishedAt: 2026-07-04
+updatedAt: 2026-07-04
 status: core
 ---
 
