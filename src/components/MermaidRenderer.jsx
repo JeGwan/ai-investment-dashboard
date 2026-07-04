@@ -12,8 +12,8 @@ const loadMermaid = async () => {
     startOnLoad: false,
     securityLevel: "strict",
     theme: "base",
+    htmlLabels: false,
     flowchart: {
-      htmlLabels: false,
       curve: "basis"
     },
     themeVariables: {
