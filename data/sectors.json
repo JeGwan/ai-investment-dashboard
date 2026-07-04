@@ -1,0 +1,157 @@
+{
+  "activeSectorId": "ai",
+  "activeSubsectorId": "semiconductors",
+  "documentPattern": "YYYY-MM-DD-title.md",
+  "coreKnowledge": [
+    {
+      "sectorId": "ai",
+      "subsectorId": "semiconductors",
+      "title": "AI 반도체 수요 구조",
+      "file": "ai-semiconductor-demand-chain.md",
+      "href": "./content/ai/core/ai-semiconductor-demand-chain.md"
+    },
+    {
+      "sectorId": "ai",
+      "subsectorId": "semiconductors",
+      "title": "HBM / Memory / Packaging 기본 지식",
+      "file": "hbm-memory-packaging-primer.md",
+      "href": "./content/ai/core/hbm-memory-packaging-primer.md"
+    }
+  ],
+  "sectors": [
+    {
+      "id": "ai",
+      "name": "AI",
+      "enabled": true,
+      "subsectors": [
+        {
+          "id": "semiconductors",
+          "name": "반도체",
+          "enabled": true,
+          "href": "#semiconductors",
+          "documents": [
+            {
+              "date": "2026-07-04",
+              "title": "토큰 최적화와 AI 반도체 수요",
+              "file": "2026-07-04-token-optimization-ai-semiconductors.md",
+              "href": "./content/ai/semiconductors/2026-07-04-token-optimization-ai-semiconductors.md"
+            }
+          ]
+        },
+        {
+          "id": "software",
+          "name": "Software",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "infrastructure",
+          "name": "Infrastructure",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "models",
+          "name": "Models",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    },
+    {
+      "id": "energy",
+      "name": "Energy",
+      "enabled": false,
+      "subsectors": [
+        {
+          "id": "power-grid",
+          "name": "Power & Grid",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "cooling",
+          "name": "Cooling",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "enabled": false,
+      "subsectors": [
+        {
+          "id": "biotech",
+          "name": "Biotech",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "medical-ai",
+          "name": "Medical AI",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    },
+    {
+      "id": "robotics",
+      "name": "Robotics",
+      "enabled": false,
+      "subsectors": [
+        {
+          "id": "industrial-robots",
+          "name": "Industrial Robots",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "humanoids",
+          "name": "Humanoids",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    },
+    {
+      "id": "consumer",
+      "name": "Consumer",
+      "enabled": false,
+      "subsectors": [
+        {
+          "id": "devices",
+          "name": "Devices",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "applications",
+          "name": "Applications",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    },
+    {
+      "id": "financials",
+      "name": "Financials",
+      "enabled": false,
+      "subsectors": [
+        {
+          "id": "payments",
+          "name": "Payments",
+          "enabled": false,
+          "documents": []
+        },
+        {
+          "id": "capital-markets",
+          "name": "Capital Markets",
+          "enabled": false,
+          "documents": []
+        }
+      ]
+    }
+  ]
+}

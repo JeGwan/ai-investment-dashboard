@@ -20,6 +20,13 @@ This repository is a public AI investment dashboard. The first active section is
 - Reusable compound UI patterns are appropriate for future navigation, tabs, filters, and data tables.
 - Verify changes with JSON validation, JavaScript syntax checks, and a local browser/server smoke test.
 
+## Content Structure
+
+- Dated reports use `content/<sector>/<subsector>/YYYY-MM-DD-title.md`.
+- Evergreen core knowledge uses `content/<sector>/core/title.md`.
+- Register reports and core knowledge in `data/sectors.json` so navigation stays data-driven.
+- Keep one-off market observations in reports; keep durable definitions and causal maps in core knowledge.
+
 ## Public Repo Hygiene
 
 - Do not include private workspace context, credentials, or non-public notes.

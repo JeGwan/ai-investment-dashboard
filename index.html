@@ -11,33 +11,33 @@
     <div class="app-layout">
       <aside class="sidebar" aria-label="dashboard navigation">
         <div class="brand-block">
-          <span class="brand-mark">AI</span>
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-glyph">Σ</span>
+            <span class="brand-pulse"></span>
+          </span>
           <div>
-            <strong>Investment Dashboard</strong>
-            <span>Market signals</span>
+            <strong>SignalDesk</strong>
+            <span>AI Investment Dashboard</span>
           </div>
         </div>
 
-        <nav class="sector-nav" aria-label="sector navigation">
-          <section class="nav-group">
-            <div class="nav-heading">
-              <span>Sector</span>
-              <strong>AI</strong>
-            </div>
-            <a class="nav-link active" href="#semiconductors" aria-current="page">
-              <span class="nav-dot"></span>
-              반도체
-            </a>
-            <a class="nav-link disabled" href="#software" aria-disabled="true">
-              <span class="nav-dot"></span>
-              Software
-            </a>
-            <a class="nav-link disabled" href="#infrastructure" aria-disabled="true">
-              <span class="nav-dot"></span>
-              Infrastructure
-            </a>
-          </section>
-        </nav>
+        <nav class="sector-nav" id="sectorNav" aria-label="sector navigation"></nav>
+
+        <section class="document-shelf" aria-label="sector documents">
+          <div class="shelf-heading">
+            <span>Reports</span>
+            <strong id="documentCount">--</strong>
+          </div>
+          <div id="sectorDocs" class="document-list"></div>
+        </section>
+
+        <section class="document-shelf" aria-label="core knowledge">
+          <div class="shelf-heading">
+            <span>Core Knowledge</span>
+            <strong id="knowledgeCount">--</strong>
+          </div>
+          <div id="coreKnowledge" class="document-list"></div>
+        </section>
 
         <div class="sidebar-note">
           <span>Scope</span>
@@ -48,7 +48,7 @@
       <main class="workspace" id="semiconductors">
         <header class="topbar">
           <div>
-            <p class="eyebrow">AI Sector / Semiconductors</p>
+            <p class="eyebrow" id="workspacePath">AI Sector / Semiconductors</p>
             <h1>AI 반도체 투자 대시보드</h1>
           </div>
           <div class="status-panel" aria-label="data status">

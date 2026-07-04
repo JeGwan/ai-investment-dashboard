@@ -2,6 +2,7 @@ const palette = ["#2878c8", "#0f8b5f", "#a96f00", "#c23b3b", "#5f5aa2"];
 
 const state = {
   data: null,
+  sectors: null,
   selectedId: null,
   normalized: false
 };
@@ -55,6 +56,13 @@ const normalizeValues = values => {
 };
 
 const indicatorById = id => state.data.indicators.find(indicator => indicator.id === id);
+
+const activeSector = () => state.sectors.sectors.find(sector => sector.id === state.sectors.activeSectorId);
+
+const activeSubsector = () => {
+  const sector = activeSector();
+  return sector.subsectors.find(subsector => subsector.id === state.sectors.activeSubsectorId);
+};
 
 const getPlotSeries = indicator => {
   return indicator.series.map(series => ({
@@ -184,6 +192,70 @@ const renderTabs = () => {
   });
 };
 
+const renderSectorNav = () => {
+  const nav = document.getElementById("sectorNav");
+  nav.innerHTML = "";
+
+  state.sectors.sectors.forEach(sector => {
+    const group = document.createElement("section");
+    group.className = `nav-group${sector.enabled ? "" : " disabled"}`;
+
+    const heading = document.createElement("div");
+    heading.className = "nav-heading";
+    heading.innerHTML = `
+      <span>${sector.enabled ? "Sector" : "Planned Sector"}</span>
+      <strong>${escapeHtml(sector.name)}</strong>
+    `;
+    group.appendChild(heading);
+
+    sector.subsectors.forEach(subsector => {
+      const link = document.createElement(subsector.enabled ? "a" : "span");
+      const active = sector.id === state.sectors.activeSectorId && subsector.id === state.sectors.activeSubsectorId;
+      link.className = `nav-link${active ? " active" : ""}${subsector.enabled ? "" : " disabled"}`;
+      if (subsector.enabled) {
+        link.href = subsector.href || "#";
+        if (active) link.setAttribute("aria-current", "page");
+      } else {
+        link.setAttribute("aria-disabled", "true");
+      }
+      link.innerHTML = `
+        <span class="nav-dot"></span>
+        ${escapeHtml(subsector.name)}
+      `;
+      group.appendChild(link);
+    });
+
+    nav.appendChild(group);
+  });
+};
+
+const renderDocuments = () => {
+  const reports = activeSubsector().documents || [];
+  const reportContainer = document.getElementById("sectorDocs");
+  const knowledge = state.sectors.coreKnowledge
+    .filter(item => item.sectorId === state.sectors.activeSectorId)
+    .filter(item => !item.subsectorId || item.subsectorId === state.sectors.activeSubsectorId);
+  const knowledgeContainer = document.getElementById("coreKnowledge");
+
+  document.getElementById("documentCount").textContent = reports.length;
+  reportContainer.innerHTML = reports.map(item => `
+    <a class="document-link" href="${escapeHtml(item.href)}">
+      <span>${escapeHtml(item.date)}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <code>${escapeHtml(item.file)}</code>
+    </a>
+  `).join("");
+
+  document.getElementById("knowledgeCount").textContent = knowledge.length;
+  knowledgeContainer.innerHTML = knowledge.map(item => `
+    <a class="document-link core" href="${escapeHtml(item.href)}">
+      <span>Core</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <code>${escapeHtml(item.file)}</code>
+    </a>
+  `).join("");
+};
+
 const renderKpis = () => {
   const grid = document.getElementById("summaryGrid");
   grid.innerHTML = "";
@@ -275,10 +347,13 @@ const renderExcludedIndicators = () => {
 const render = () => {
   document.getElementById("updatedAt").textContent = `업데이트 ${state.data.updatedAt} · 실제 공개 데이터`;
   document.getElementById("dataNote").textContent = state.data.note;
+  document.getElementById("workspacePath").textContent = `${activeSector().name} Sector / ${activeSubsector().name}`;
   document.getElementById("normalizeToggle").checked = state.normalized;
   document.getElementById("indicatorCount").textContent = state.data.indicators.length;
   document.getElementById("sourceCount").textContent = state.data.indicators
     .reduce((total, indicator) => total + (indicator.sources || []).length, 0);
+  renderSectorNav();
+  renderDocuments();
   renderTabs();
   renderKpis();
   renderFocus();
@@ -287,8 +362,12 @@ const render = () => {
 };
 
 const boot = async () => {
-  const response = await fetch("./data/metrics.json");
-  state.data = await response.json();
+  const [metricsResponse, sectorsResponse] = await Promise.all([
+    fetch("./data/metrics.json"),
+    fetch("./data/sectors.json")
+  ]);
+  state.data = await metricsResponse.json();
+  state.sectors = await sectorsResponse.json();
   state.selectedId = state.data.indicators[0].id;
 
   document.getElementById("normalizeToggle").addEventListener("change", event => {
@@ -301,5 +380,5 @@ const boot = async () => {
 };
 
 boot().catch(error => {
-  document.body.innerHTML = `<main class="app-shell"><h1>데이터 로딩 실패</h1><p>${error.message}</p></main>`;
+  document.body.innerHTML = `<main class="workspace"><h1>데이터 로딩 실패</h1><p>${error.message}</p></main>`;
 });
